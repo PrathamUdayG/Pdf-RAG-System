@@ -14,6 +14,19 @@ from tavily import TavilyClient
 # ── Load environment variables ──────────────────────────────────────────
 load_dotenv()
 
+
+def get_secret(key: str, default: str = "") -> str:
+    """Retrieve a secret from Streamlit Cloud secrets or local .env file."""
+    try:
+        return st.secrets[key]
+    except (KeyError, FileNotFoundError):
+        return os.getenv(key, default)
+
+# Ensure GOOGLE_API_KEY is available as env var (needed by langchain-google-genai)
+_google_key = get_secret("GOOGLE_API_KEY")
+if _google_key:
+    os.environ["GOOGLE_API_KEY"] = _google_key
+
 # ── Page configuration ──────────────────────────────────────────────────
 st.set_page_config(
     page_title="PDF Q&A — RAG System",
@@ -185,7 +198,7 @@ def build_vectorstore(file_bytes: bytes, file_name: str):
 
 def tavily_search(query: str, max_results: int = 3):
     """Run a Tavily web search. Returns list[dict] with title, url, content."""
-    api_key = os.getenv("TAVILY_API_KEY", "")
+    api_key = get_secret("TAVILY_API_KEY")
     if not api_key:
         return []
     try:
@@ -286,7 +299,7 @@ with st.sidebar:
         help="Number of most-similar PDF chunks sent to the LLM.",
     )
 
-    tavily_available = bool(os.getenv("TAVILY_API_KEY", ""))
+    tavily_available = bool(get_secret("TAVILY_API_KEY"))
     web_search_on = st.toggle(
         "🌐 Web Search (Tavily)",
         value=False,
