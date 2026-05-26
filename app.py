@@ -17,15 +17,21 @@ load_dotenv()
 
 def get_secret(key: str, default: str = "") -> str:
     """Retrieve a secret from Streamlit Cloud secrets or local .env file."""
+    # Try Streamlit Cloud secrets first
     try:
-        return st.secrets[key]
-    except (KeyError, FileNotFoundError):
-        return os.getenv(key, default)
+        val = st.secrets.get(key, None)
+        if val:
+            return str(val)
+    except Exception:
+        pass
+    # Fallback to environment variable (.env file)
+    return os.getenv(key, default)
 
-# Ensure GOOGLE_API_KEY is available as env var (needed by langchain-google-genai)
-_google_key = get_secret("GOOGLE_API_KEY")
-if _google_key:
-    os.environ["GOOGLE_API_KEY"] = _google_key
+# Ensure API keys are available as env vars (needed by langchain / tavily)
+for _key in ("GOOGLE_API_KEY", "TAVILY_API_KEY"):
+    _val = get_secret(_key)
+    if _val:
+        os.environ[_key] = _val
 
 # ── Page configuration ──────────────────────────────────────────────────
 st.set_page_config(
