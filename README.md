@@ -19,6 +19,12 @@
 
 <img src="docs/app_screenshot.png" alt="PDF RAG System — App Screenshot" width="90%" style="border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.3);" />
 
+<br><br>
+
+<a href="https://pdf-rag-system-cvpgps4pkqshqrtvmqgrl4.streamlit.app/">
+  <img src="https://img.shields.io/badge/👉_TRY_IT_LIVE-Click_Here_to_Experience-FF4B4B?style=for-the-badge&logoColor=white&labelColor=302b63" alt="Try it Live" height="45" />
+</a>
+
 <br>
 
 </div>
